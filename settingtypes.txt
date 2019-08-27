@@ -1,0 +1,2 @@
+discord.port (Port to run the relay on.) int 8080
+discord.text_color (Custom color for relayed messages.) string #ffffff
