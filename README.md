@@ -31,10 +31,13 @@ channel_id = 576585506658189332
 allow_logins = true
 ```
 
-4. Set `discord.port` in your `minetest.conf` to match the port you used in `relay.conf`. You may also set `discord.text_color` to a hex color string if you'd like to color relayed messages from Discord.
+4. Enable mod security and add `discordmt` to the trusted and http mods. In additon, set `discord.port` in your `minetest.conf` to match the port you used in `relay.conf`and optionally set `discord.text_color` to a hex color string if you'd like to color relayed messages from Discord.
 
 Example `minetest.conf` excerpt:
 ```
+secure.enable_security = true
+secure.trusted_mods = discordmt
+secure.http_mods = discordmt
 discord.port = 8080
 discord.text_color = #a7a7a7
 ```
