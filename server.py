@@ -31,6 +31,9 @@ class Queue():
     def isEmpty(self):
         return len(self.queue) == 0
 
+def clean_invites(string):
+    return ' '.join([word for word in string.split() if not ('discord.gg' in word) and not ('discordapp.com/invite' in word)])
+
 outgoing_msgs = Queue()
 command_queue = Queue()
 login_queue = Queue()
@@ -46,6 +49,7 @@ connected = False
 port = int(config['RELAY']['port'])
 token = config['BOT']['token']
 logins_allowed = True if config['RELAY']['allow_logins'] == 'true' else False
+do_clean_invites = True if config['RELAY']['clean_invites'] == 'true' else False
 
 last_request = 0
 
@@ -108,10 +112,15 @@ async def on_message(message):
     global outgoing_msgs
     if check_timeout():
         if (message.channel.id == channel_id) and (message.author.id != bot.user.id):
-            outgoing_msgs.add({
+            msg = {
                 'author': message.author.name,
                 'content': message.content.replace('\n', '/')
-            })
+            }
+            if do_clean_invites:
+                msg['content'] = clean_invites(msg['content'])
+            if msg['content'] != '':
+                outgoing_msgs.add(msg)
+                
         await bot.process_commands(message)
 
 @bot.command(help='Runs an ingame command from Discord.')

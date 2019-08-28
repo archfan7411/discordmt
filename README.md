@@ -29,14 +29,13 @@ command_prefix = !
 port = 8080
 channel_id = 576585506658189332
 allow_logins = true
+clean_invites = true
 ```
 
-4. Enable mod security and add `discordmt` to the http mods. In additon, set `discord.port` in your `minetest.conf` to match the port you used in `relay.conf`and optionally set `discord.text_color` to a hex color string if you'd like to color relayed messages from Discord.
+4. Set `discord.port` in your `minetest.conf` to match the port you used in `relay.conf`. You may also set `discord.text_color` to a hex color string if you'd like to color relayed messages from Discord.
 
 Example `minetest.conf` excerpt:
 ```
-secure.enable_security = true
-secure.http_mods = discordmt
 discord.port = 8080
 discord.text_color = #a7a7a7
 ```
