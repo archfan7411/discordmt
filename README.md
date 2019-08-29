@@ -30,6 +30,7 @@ port = 8080
 channel_id = 576585506658189332
 allow_logins = true
 clean_invites = true
+use_nicknames = true
 ```
 
 4. Set `discord.port` in your `minetest.conf` to match the port you used in `relay.conf`. You may also set `discord.text_color` to a hex color string if you'd like to color relayed messages from Discord.

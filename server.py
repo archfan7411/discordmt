@@ -50,6 +50,7 @@ port = int(config['RELAY']['port'])
 token = config['BOT']['token']
 logins_allowed = True if config['RELAY']['allow_logins'] == 'true' else False
 do_clean_invites = True if config['RELAY']['clean_invites'] == 'true' else False
+do_use_nicknames = True if config['RELAY']['use_nicknames'] == 'true' else False
 
 last_request = 0
 
@@ -113,7 +114,7 @@ async def on_message(message):
     if check_timeout():
         if (message.channel.id == channel_id) and (message.author.id != bot.user.id):
             msg = {
-                'author': message.author.name,
+                'author': message.author.name if not do_use_nicknames else message.author.display_name,
                 'content': message.content.replace('\n', '/')
             }
             if do_clean_invites:
