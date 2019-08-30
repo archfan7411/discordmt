@@ -4,10 +4,9 @@
 
 It does not expose the command interface or logins to the API, and `discord.register_on_message` events will *not* recieve login information.
 
-### `discord.send(message [, optional id])`
+### `discord.send(message)`
 Sends `message` to Discord.
 This function makes an HTTP request; therefore the sending of large volumes of data might be better grouped into a single request. **Do note that Discord limits messages to 2,000 characters, and the relay automatically cuts off messages.**
-The optional `id` parameter specifies a specific Discord user to send the message to.
 
 ### `discord.register_on_message(function(name, message))`
 Adds a function to `discord.registered_on_messages`, which are called every time a message is received from Discord, excluding logins. `name` is by default the Discord username of the user who sent the message (excluding the discriminator) and `message` is the message content. This function should be called on startup.
