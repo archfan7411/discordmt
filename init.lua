@@ -145,7 +145,7 @@ if minetest.get_modpath('irc') then
             irc.say(message)
         end
     end
-    irc.register_hook("OnSend", function(line)
+    irc.register_hook("OnChannelChat", function(line)
         discord.send_noirc(line)
     end)
 end
