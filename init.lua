@@ -145,9 +145,11 @@ if minetest.get_modpath('irc') then
             irc.say(message)
         end
     end
-    irc.register_hook("OnChannelChat", function(line)
-        discord.send_noirc(line)
-    end)
+    local old_irc_send_local = irc.sendLocal
+    irc.sendLocal = function(message)
+        old_irc_send_local(message)
+        discord.send_noirc(message)
+    end
 end
 
 discord.send('*** Server started!')
