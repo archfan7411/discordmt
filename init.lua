@@ -142,7 +142,7 @@ if minetest.get_modpath('irc') then
     discord.send = function(message, id)
         discord.send_noirc(message,id)
         if not id then
-            irc:send(message)
+            irc.say(message)
         end
     end
     local old_irc_send_local = irc.sendLocal
