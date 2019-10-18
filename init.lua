@@ -10,11 +10,13 @@ discord.text_colorization = settings:get('discord.text_color') or '#ffffff'
 
 discord.registered_on_messages = {}
 
+local irc_enabled = minetest.get_modpath("irc")
+
 discord.register_on_message = function(func)
     table.insert(discord.registered_on_messages, func)
 end   
 
-local old_chat_send_all = minetest.chat_send_all
+discord.chat_send_all = minetest.chat_send_all
 
 discord.handle_response = function(response)
     local data = response.data
@@ -31,7 +33,10 @@ discord.handle_response = function(response)
                 func(message.author, message.content)
             end
             local msg = ('<%s@Discord> %s'):format(message.author, message.content)
-            old_chat_send_all(minetest.colorize(discord.text_colorization, msg))
+            discord.chat_send_all(minetest.colorize(discord.text_colorization, msg))
+            if irc_enabled then
+                irc.say(msg)
+            end
             minetest.log('[Discord] Message: '..msg)
         end
     end
@@ -108,7 +113,7 @@ discord.send = function(message, id)
 end
 
 minetest.chat_send_all = function(message)
-    old_chat_send_all(message)
+    discord.chat_send_all(message)
     discord.send(message)
 end
 
@@ -136,5 +141,13 @@ end)
 minetest.register_on_shutdown(function()
     discord.send('*** Server shutting down...')
 end)
+
+if irc_enabled then
+    discord.old_irc_sendLocal = irc.sendLocal
+    irc.sendLocal = function(msg)
+        discord.old_irc_sendLocal(msg)
+        discord.send(msg)
+    end
+end
 
 discord.send('*** Server started!')
