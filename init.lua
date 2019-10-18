@@ -10,6 +10,8 @@ discord.text_colorization = settings:get('discord.text_color') or '#ffffff'
 
 discord.registered_on_messages = {}
 
+local irc_enabled = minetest.get_modpath("irc")
+
 discord.register_on_message = function(func)
     table.insert(discord.registered_on_messages, func)
 end   
@@ -32,6 +34,9 @@ discord.handle_response = function(response)
             end
             local msg = ('<%s@Discord> %s'):format(message.author, message.content)
             discord.chat_send_all(minetest.colorize(discord.text_colorization, msg))
+            if irc_enabled then
+                irc.say(msg)
+            end
             minetest.log('[Discord] Message: '..msg)
         end
     end
@@ -137,18 +142,11 @@ minetest.register_on_shutdown(function()
     discord.send('*** Server shutting down...')
 end)
 
-if minetest.get_modpath('irc') then
-    discord.send_noirc = discord.send
-    discord.send = function(message, id)
-        discord.send_noirc(message,id)
-        if not id then
-            irc.say(message)
-        end
-    end
-    local old_irc_send_local = irc.sendLocal
-    irc.sendLocal = function(message)
-        old_irc_send_local(message)
-        discord.send_noirc(message)
+if irc_enabled then
+    discord.old_irc_sendLocal = irc.sendLocal
+    irc.sendLocal = function(msg)
+        discord.old_irc_sendLocal(msg)
+        discord.send(msg)
     end
 end
 
