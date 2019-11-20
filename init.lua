@@ -2,7 +2,7 @@ local http = minetest.request_http_api()
 local settings = minetest.settings
 
 local port = settings:get('discord.port') or 8080
-local timeout = 10
+local timeout = 30
 
 discord = {}
 
