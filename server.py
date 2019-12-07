@@ -41,7 +41,7 @@ login_queue = Queue()
 
 prefix = config['BOT']['command_prefix']
 
-bot = commands.Bot(command_prefix=prefix, help_command=None)
+bot = commands.Bot(command_prefix=prefix)
 
 channel_id = int(config['RELAY']['channel_id'])
 
