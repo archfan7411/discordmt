@@ -38,7 +38,7 @@ use_nicknames = true
 Example `minetest.conf` excerpt:
 ```
 secure.enable_security = true
-secure.trusted_mods = discordmt
+secure.http_mods = discordmt
 discord.port = 8080
 discord.text_color = #a7a7a7
 ```
