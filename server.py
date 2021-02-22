@@ -61,6 +61,15 @@ authenticated_users = {}
 def check_timeout():
     return time.time() - last_request <= 1
 
+async def get_or_fetch_user(user_id):
+    user = bot.get_user(user_id)
+    if user is None:
+        user = await bot.fetch_user(user_id)
+        if user is None:
+            print(f'Failed to fetch user {user_id!r}.')
+
+    return user
+
 async def handle(request):
     global last_request
     last_request = time.time()
@@ -71,19 +80,18 @@ async def handle(request):
             msg = discord.utils.escape_mentions(data['content'])[0:2000]
             if 'context' in data.keys():
                 id = int(data['context'])
-                user = bot.get_user(id)
+                user = await get_or_fetch_user(id)
                 if user is not None:
                     await user.send(msg)
-                else:
-                    print('unyay')
             else:
                 await channel.send(msg)
             return web.Response(text = 'Acknowledged') # discord.send should NOT block extensively on the Lua side
         if data['type'] == 'DISCORD_LOGIN_RESULT':
-            user = bot.get_user(int(data['user_id']))
+            user_id = int(data['user_id'])
+            user = await get_or_fetch_user(user_id)
             if user is not None:
                 if data['success'] is True:
-                    authenticated_users[int(data['user_id'])] = data['username']
+                    authenticated_users[user_id] = data['username']
                     await user.send('Login successful.')
                 else:
                     await user.send('Login failed.')
