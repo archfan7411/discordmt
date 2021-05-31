@@ -80,7 +80,7 @@ async def handle(request):
         if data['type'] == 'DISCORD-RELAY-MESSAGE':
             msg = discord.utils.escape_mentions(data['content'])[0:2000]
             r = re.compile(r'\x1b(T|F|E|\(T@[^\)]*\))')
-            msg = r.sub('', data['content'])
+            msg = r.sub('', msg)
             if 'context' in data.keys():
                 id = int(data['context'])
                 user = await get_or_fetch_user(id)
