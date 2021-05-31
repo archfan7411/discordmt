@@ -134,10 +134,13 @@ async def on_message(message):
             if msg['content'] != '':
                 outgoing_msgs.add(msg)
                 
-        await bot.process_commands(message)
+    await bot.process_commands(message)
 
 @bot.command(help='Runs an ingame command from Discord.')
 async def cmd(ctx, command, *, args=''):
+    if not check_timeout():
+        await ctx.send("The server currently appears to be down.")
+        return
     if ((ctx.channel.id != channel_id) and ctx.guild is not None) or not logins_allowed:
         return
     if ctx.author.id not in authenticated_users.keys():
@@ -154,7 +157,7 @@ async def cmd(ctx, command, *, args=''):
     
 @bot.command(help='Logs into your ingame account from Discord so you can run commands. You should only run this command in DMs with the bot.')
 async def login(ctx, username, password=''):
-    if not check_timeout() or not logins_allowed:
+    if not logins_allowed:
         return
     if ctx.guild is not None:
         await ctx.send(ctx.author.mention+' You\'ve quite possibly just leaked your password; it is advised that you change it at once.\n*This message will be automatically deleted*', delete_after = 10)
@@ -164,10 +167,13 @@ async def login(ctx, username, password=''):
         'password' : password,
         'user_id' : str(ctx.author.id)
     })
+    if not check_timeout():
+        await ctx.send("The server currently appears to be down, but your login attempt has been added to the queue and will be executed as soon as the server returns.")
 
 @bot.command(help='Lists connected players and server information.')
 async def status(ctx, *, args=None):
     if not check_timeout():
+        await ctx.send("The server currently appears to be down.")
         return
     if ((ctx.channel.id != channel_id) and ctx.guild is not None):
         return
