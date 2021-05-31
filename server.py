@@ -8,6 +8,7 @@ import asyncio
 import json
 import time
 import configparser
+import re
 
 config = configparser.ConfigParser()
 
@@ -78,6 +79,8 @@ async def handle(request):
         data = json.loads(text)
         if data['type'] == 'DISCORD-RELAY-MESSAGE':
             msg = discord.utils.escape_mentions(data['content'])[0:2000]
+            r = re.compile(r'\x1b(T|F|E|\(T@[^\)]*\))')
+            msg = r.sub('', data['content'])
             if 'context' in data.keys():
                 id = int(data['context'])
                 user = await get_or_fetch_user(id)
