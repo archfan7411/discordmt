@@ -37,7 +37,7 @@ discord.handle_response = function(response)
             if irc_enabled then
                 irc.say(msg)
             end
-            minetest.log('[Discord] Message: '..msg)
+            minetest.log('action', '[Discord] Message: '..msg)
         end
     end
     if data.commands then
