@@ -62,13 +62,22 @@ authenticated_users = {}
 def check_timeout():
     return time.time() - last_request <= 1
 
-async def get_or_fetch_user(user_id):
-    user = bot.get_user(user_id)
-    if user is None:
-        user = await bot.fetch_user(user_id)
-        if user is None:
-            print(f'Failed to fetch user {user_id!r}.')
+async def get_or_fetch_channel(id):
+    target_channel = bot.get_channel(id)
+    if target_channel is None:
+        target_channel = await bot.fetch_channel(id)
+        if target_channel is None:
+            print(f'Failed to fetch channel {id!r}.')
 
+    return target_channel
+
+async def get_or_fetch_user(user_id):
+    user = bot.get_channel(user_id)
+    if user is None:
+        user = await bot.fetch_channel(user_id)
+        if user is None:
+            print(f'Failed to fetch channel {user_id!r}.')
+    
     return user
 
 async def handle(request):
@@ -83,9 +92,9 @@ async def handle(request):
             msg = r.sub('', msg)
             if 'context' in data.keys():
                 id = int(data['context'])
-                user = await get_or_fetch_user(id)
-                if user is not None:
-                    await user.send(msg)
+                target_channel = await get_or_fetch_channel(id)
+                if target_channel is not None:
+                    await target_channel.send(msg)
             else:
                 await channel.send(msg)
             return web.Response(text = 'Acknowledged') # discord.send should NOT block extensively on the Lua side
@@ -160,7 +169,11 @@ async def login(ctx, username, password=''):
     if not logins_allowed:
         return
     if ctx.guild is not None:
-        await ctx.send(ctx.author.mention+' You\'ve quite possibly just leaked your password; it is advised that you change it at once.\n*This message will be automatically deleted*', delete_after = 10)
+        await ctx.send(ctx.author.mention+' You\'ve quite possibly just leaked your password by using this command outside of DMs; it is advised that you change it at once.\n*This message will be automatically deleted.*', delete_after = 10)
+        try:
+            await ctx.message.delete()
+        except:
+            print(f"Unable to delete possible password leak by user ID {ctx.author.id} due to insufficient permissions.")
         return
     login_queue.add({
         'username' : username,
