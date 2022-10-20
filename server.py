@@ -101,7 +101,7 @@ async def handle(request):
         if data['type'] == 'DISCORD_LOGIN_RESULT':
             user_id = int(data['user_id'])
             user = bot.get_partial_messageable(user_id)
-            if data['success'] is True:
+            if data['success']:
                 authenticated_users[user_id] = data['username']
                 await user.send('Login successful.')
             else:
