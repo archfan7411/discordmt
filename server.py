@@ -100,7 +100,10 @@ async def handle(request):
             return web.Response(text='Acknowledged')
         if data['type'] == 'DISCORD_LOGIN_RESULT':
             user_id = int(data['user_id'])
-            user = bot.get_partial_messageable(user_id)
+            user = bot.get_user(user_id)
+            if user is None:
+                user = await bot.fetch_user(user_id)
+
             if data['success']:
                 authenticated_users[user_id] = data['username']
                 await user.send('Login successful.')
@@ -158,7 +161,7 @@ async def cmd(ctx, command, *, args=''):
         'params': args.replace('\n', '')
     }
     if ctx.guild is None:
-        command['context'] = str(ctx.author.id)
+        command['context'] = str(ctx.channel.id)
     command_queue.add(command)
 
 
@@ -204,7 +207,7 @@ async def status(ctx, *, args=None):
         'params': '',
     }
     if ctx.guild is None:
-        data['context'] = str(ctx.author.id)
+        data['context'] = str(ctx.channel.id)
     command_queue.add(data)
 
 
