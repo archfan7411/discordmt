@@ -12,13 +12,18 @@ discord.registered_on_messages = {}
 
 local irc_enabled = minetest.get_modpath("irc")
 
-discord.register_on_message = function(func)
+function discord.register_on_message(func)
     table.insert(discord.registered_on_messages, func)
-end   
+end
 
 discord.chat_send_all = minetest.chat_send_all
 
-discord.handle_response = function(response)
+-- Allow the chat message format to be customised by other mods
+function discord.format_chat_message(name, msg)
+    return ('<%s@Discord> %s'):format(name, msg)
+end
+
+function discord.handle_response(response)
     local data = response.data
     if data == '' or data == nil then
         return
@@ -32,7 +37,7 @@ discord.handle_response = function(response)
             for _, func in pairs(discord.registered_on_messages) do
                 func(message.author, message.content)
             end
-            local msg = ('<%s@Discord> %s'):format(message.author, message.content)
+            local msg = discord.format_chat_message(message.author, message.content)
             discord.chat_send_all(minetest.colorize(discord.text_colorization, msg))
             if irc_enabled then
                 irc.say(msg)
@@ -97,7 +102,7 @@ discord.handle_response = function(response)
     end
 end
 
-discord.send = function(message, id)
+function discord.send(message, id)
     local data = {
         type = 'DISCORD-RELAY-MESSAGE',
         content = minetest.strip_colors(message)
@@ -112,13 +117,15 @@ discord.send = function(message, id)
     }, function(_) end)
 end
 
-minetest.chat_send_all = function(message)
+function minetest.chat_send_all(message)
     discord.chat_send_all(message)
     discord.send(message)
 end
 
-minetest.register_on_chat_message(function(name, message)
-    discord.send(('<%s> %s'):format(name, message))
+-- Register the chat message callback after other mods load so that anything
+-- that overrides chat will work correctly
+minetest.after(0, minetest.register_on_chat_message, function(name, message)
+    discord.send(minetest.format_chat_message(name, message))
 end)
 
 local timer = 0
@@ -144,7 +151,7 @@ end)
 
 if irc_enabled then
     discord.old_irc_sendLocal = irc.sendLocal
-    irc.sendLocal = function(msg)
+    function irc.sendLocal(msg)
         discord.old_irc_sendLocal(msg)
         discord.send(msg)
     end
