@@ -69,7 +69,7 @@ function discord.handle_response(response)
                         discord.send(message, v.context or nil)
                     end
                 end
-                success, ret_val = commands[v.command].func(v.name, v.params or '')
+                local success, ret_val = commands[v.command].func(v.name, v.params or '')
                 if ret_val then
                     discord.send(ret_val, v.context or nil)
                 end
