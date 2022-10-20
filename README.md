@@ -12,7 +12,7 @@ A feature-filled Discord relay for Minetest, supporting:
 
 Easy! `discordmt` works by running a Python program which converses with a serverside mod using HTTP requests. Don't have or want Python? No problem! Binaries are also available.
 
-If you want to run the source, however, Python 3.6.3+, `aiohttp` 3.5+ and `discord.py` 1.2.5+ are required.
+If you want to run the source, however, Python 3.8+, `aiohttp` 3.7.4+ and `discord.py` 2.0.0+ are required.
 
 ### Basic setup
 
