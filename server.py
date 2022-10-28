@@ -224,7 +224,10 @@ async def send_messages():
             to_send.append(msg)
             msglen += len(msg) + 1
 
-        await channel.send('\n'.join(to_send))
+        try:
+            await channel.send('\n'.join(to_send))
+        except Exception:
+            traceback.print_exc()
 
 
 async def on_startup(app):
