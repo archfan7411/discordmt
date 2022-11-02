@@ -10,14 +10,14 @@ A feature-filled Discord relay for Minetest, supporting:
 
 ## Great! How do I use it?
 
-Easy! `discordmt` works by running a Python program which converses with a serverside mod using HTTP requests. Don't have or want Python? No problem! Binaries are also available.
+Easy! `discordmt` works by running a Python program which converses with a serverside mod using HTTP requests.
 
-If you want to run the source, however, Python 3.8+, `aiohttp` 3.7.4+ and `discord.py` 2.0.0+ are required.
+Python 3.8+, `aiohttp` 3.7.4+ and `discord.py` 2.0.0+ are required.
 
 ### Basic setup
 
-1. Download the mod and binary executable (or the source code and its dependencies.)
-2. Create an application at the [Discord Developer Dashboard](https://discordapp.com/developers/applications/) and enable it as a bot (in the Bot tab.)
+1. Download the source code and its dependencies.
+2. Create an application at the [Discord Developer Dashboard](https://discordapp.com/developers/applications/) and enable it as a bot (in the Bot tab.) Also enable the **Message Content Intent**.
 3. Copy the token from your newly-created bot, and use it to finish setting up `relay.conf`.
 
 Example `relay.conf`: *(The token shown below has been regenerated)*
@@ -49,13 +49,20 @@ discord.text_color = #a7a7a7
 ## Frequently Asked Questions
 
 **Q: I just want a normal relay. Can I disable logins?**
-A: Yep! Just set `allow_logins = false` in `relay.conf`.
+
+*A: Yep! Just set `allow_logins = false` in `relay.conf`.*
 
 **Q: Do I need to re-login after a server restart, like with the IRC mod?**
-A: Nope, logins persist as long as the relay is up.
+
+*A: Nope, logins persist as long as the relay is up.*
 
 **Q: I'm getting an HTTP error - it says the server can't be found?**
-A: Make sure the relay is running and that you've configured the correct port in both `minetest.conf` and `relay.conf`.
+
+*A: Make sure the relay is running and that you've configured the correct port in both `minetest.conf` and `relay.conf`.*
+
+**Q: Why is an external program required at all? And why use HTTP polling?**
+
+*A: Discord's API uses websockets, which require a continuous connection. Minetest's Lua API is not set up to handle these, so running a Discord relay entirely within Minetest is infeasible. HTTP polling is used because it avoids additional dependencies (such as luasocket).*
 
 
 
