@@ -219,13 +219,14 @@ async def send_messages():
 
         to_send = []
         msglen = 0
-        while incoming_msgs and msglen + len(incoming_msgs[0]) < 1999:
+        while incoming_msgs and msglen + len(incoming_msgs[0]) <= 2000:
             msg = incoming_msgs.popleft()
             to_send.append(msg)
             msglen += len(msg) + 1
 
         try:
-            await channel.send('\n'.join(to_send))
+            await asyncio.wait_for(channel.send('\n'.join(to_send)),
+                                   timeout=10)
         except Exception:
             traceback.print_exc()
 
