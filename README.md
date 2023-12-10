@@ -17,8 +17,8 @@ Python 3.8+, `aiohttp` 3.7.4+ and `discord.py` 2.0.0+ are required.
 ### Basic setup
 
 1. Download the source code and its dependencies.
-2. Create an application at the [Discord Developer Dashboard](https://discordapp.com/developers/applications/) and enable it as a bot (in the Bot tab.) Also enable the **Message Content Intent**.
-3. Copy the token from your newly-created bot, and use it to finish setting up `relay.conf`.
+2. Create an application at the [Discord Developer Dashboard](https://discordapp.com/developers/applications/) (if You use Firefox, a more recent version might be needed, to use (all) the website's functionalities) and enable it as a bot (in the Bot tab.) Also enable the **Message Content Intent**. 
+3. Copy the token (this is not the "PUBLIC KEY") from your newly-created bot, and use it to finish setting up `relay.conf`.
 
 Example `relay.conf`: *(The token shown below has been regenerated)*
 ```
